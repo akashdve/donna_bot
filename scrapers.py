@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from constants import COLLEGE_UPDATES_TEMPLATE
 
 
-def centennial_rss(source='https://www.centennialcollege.ca/news/rss'):
+def fetch_rss_feed(source):
     try:
         r = requests.get(source)
         print(r.status_code)
@@ -46,8 +46,8 @@ def centennial_rss(source='https://www.centennialcollege.ca/news/rss'):
         return 500, []
 
 
-def get_centennial_updates(n_updates=1) -> str:
-    status, data = centennial_rss()
+def get_college_updates(source_url, n_updates=1) -> str:
+    status, data = fetch_rss_feed(source=source_url)
     updates = ""
     if status == 200 and len(data) > 0:
         filtered_data = data[-n_updates:]

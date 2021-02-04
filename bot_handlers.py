@@ -4,8 +4,9 @@ from profanity_filter import ProfanityFilter
 from telegram import Update, ChatAction, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, run_async
 
+import constants
 from constants import ON_DEMAND
-from scrapers import get_centennial_updates
+from scrapers import get_college_updates
 
 pf = ProfanityFilter()
 
@@ -63,19 +64,32 @@ def welcome(update: Update, context: CallbackContext, new_member):
 
 @run_async
 @send_typing_action
-def updates(update: Update, context: CallbackContext):
+def college_updates(update: Update, context: CallbackContext):
     n_updates = int(context.args[0]) if len(context.args) > 0 else 2
-    if "centennial" in str(update.effective_chat.title).lower():
-        reply = get_centennial_updates(n_updates)
-        reply = ON_DEMAND.format("Centennial") + reply
+    reply = ""
 
+    if "centennial" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("Centennial") + get_college_updates(get_college_rss_url("centennial"), n_updates)
+
+    elif "humber" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("Humber") + get_college_updates(get_college_rss_url("humber"), n_updates)
+
+    if len(reply) == 0:
+        update.message.reply_text('Requested Resource is under construction. Sorry!')
+    else:
         if len(reply) > 4096:
             for x in range(0, len(reply), 4096):
-                update.message.reply_text(reply[x:x+4096])
+                update.message.reply_text(reply[x:x + 4096])
         else:
             update.message.reply_text(reply)
-    else:
-        update.message.reply_text('Requested Resource is under construction. Sorry!')
+
+
+def get_college_rss_url(college_name: str) -> str:
+    for url in constants.COLLEGE_RSS_URLS:
+        if college_name in url:
+            return url
+    return ""
+
 
 
 @send_typing_action
