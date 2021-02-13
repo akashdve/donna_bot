@@ -1,14 +1,12 @@
 from functools import wraps
 
-from profanity_filter import ProfanityFilter
+from profanity import has_profanity
 from telegram import Update, ChatAction, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, run_async
 
 import constants
 from constants import ON_DEMAND
 from scrapers import get_college_updates
-
-pf = ProfanityFilter()
 
 
 def send_typing_action(func):
@@ -99,7 +97,7 @@ def good_echo(update: Update, context: CallbackContext):
                  InlineKeyboardButton("👎 0", callback_data='dislike'),
                  InlineKeyboardButton("🚫 0", callback_data='spam')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    if pf.is_profane(text):
+    if has_profanity(text):
         update.message.reply_text("Please be kind and respectful to others else you will be kicked.")
     else:
         if len(text) >= 250:
