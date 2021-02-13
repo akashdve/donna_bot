@@ -1,9 +1,15 @@
 import logging
 import os
+import spacy
+import en_core_web_sm
 
 from py_dotenv import read_dotenv
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from bot_handlers import start, good_echo, button, empty_message, college_updates
+
+
+nlp = en_core_web_sm.load()
+
 
 if __name__ == '__main__':
 
