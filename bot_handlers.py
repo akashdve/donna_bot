@@ -75,6 +75,18 @@ def college_updates(update: Update, context: CallbackContext):
     elif "clair" in str(update.effective_chat.title).lower():
         reply = ON_DEMAND.format("St. Clair") + get_college_updates(get_college_rss_url("clair"), n_updates)
 
+    elif "seneca" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("Seneca") + get_college_updates(get_college_rss_url("seneca"), n_updates)
+
+    elif "georgian" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("Georgian") + get_college_updates(get_college_rss_url("georgian"), n_updates)
+
+    elif "george brown" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("George Brown") + get_college_updates(get_college_rss_url("george brown"), n_updates)
+
+    elif "algonquin" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("Algonquin") + get_college_updates(get_college_rss_url("algonquin"), n_updates)
+
     if len(reply) == 0:
         update.message.reply_text('Requested Resource is under construction. Sorry!')
     else:
@@ -86,9 +98,17 @@ def college_updates(update: Update, context: CallbackContext):
 
 
 def get_college_rss_url(college_name: str) -> str:
-    for url in constants.COLLEGE_RSS_URLS:
-        if college_name in url:
-            return url
+    for key in constants.COLLEGE_RSS_URLS:
+        try:
+            if college_name in key:
+                url = constants.COLLEGE_RSS_URLS[key]["source_rss_url"]
+                if url:
+                    return url
+                else:
+                    return constants.COLLEGE_RSS_URLS[key]["fetch_rss_url"]
+        except LookupError as e:
+            print(e)
+            return ""
     return ""
 
 
