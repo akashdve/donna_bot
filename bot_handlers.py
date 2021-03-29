@@ -72,6 +72,9 @@ def college_updates(update: Update, context: CallbackContext):
     elif "humber" in str(update.effective_chat.title).lower():
         reply = ON_DEMAND.format("Humber") + get_college_updates(get_college_rss_url("humber"), n_updates)
 
+    elif "clair" in str(update.effective_chat.title).lower():
+        reply = ON_DEMAND.format("St. Clair") + get_college_updates(get_college_rss_url("clair"), n_updates)
+
     if len(reply) == 0:
         update.message.reply_text('Requested Resource is under construction. Sorry!')
     else:
