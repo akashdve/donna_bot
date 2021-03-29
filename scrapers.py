@@ -1,3 +1,4 @@
+import bs4
 import requests
 from bs4 import BeautifulSoup
 
@@ -54,6 +55,8 @@ def get_college_updates(source_url, n_updates=1) -> str:
         filtered_data.reverse()
         for d in filtered_data:
             updates = updates + COLLEGE_UPDATES_TEMPLATE.format(d["published_on"], d["title"], d["description"], d["link"])
+
+        updates = bs4.BeautifulSoup(updates).text
         return updates
     else:
         return updates
